@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Command } from "lucide-react";
 
+import { UserLoginForm } from "@/components/user-login-form";
+
 export const metadata: Metadata = {
   title: "Autenticação",
   description:
@@ -31,7 +33,7 @@ export default async function Login() {
               Entre com seus dados de Login
             </p>
           </div>
-          {/* UserLoginForm  */}
+          <UserLoginForm />
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link

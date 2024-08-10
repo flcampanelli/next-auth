@@ -3,6 +3,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Command } from "lucide-react";
 
+import { UserRegisterForm } from "@/components/user-register-form";
+
 export const metadata: Metadata = {
   title: "Cadastro",
   description:
@@ -33,7 +35,7 @@ export default async function Register() {
               Entre com seus dados
             </p>
           </div>
-          {/* UserRegisterForm */}
+          <UserRegisterForm />
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link

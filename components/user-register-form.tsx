@@ -5,6 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
+import { useRouter } from "next/navigation";
 
 interface UserRegisterFormProps
   extends React.HtmlHTMLAttributes<HTMLDivElement> {}
@@ -19,6 +23,10 @@ export function UserRegisterForm({
   className,
   ...props
 }: UserRegisterFormProps) {
+  const { toast } = useToast();
+
+  const router = useRouter();
+
   const [data, setData] = useState<IUser>({
     name: "",
     email: "",
@@ -30,6 +38,29 @@ export function UserRegisterForm({
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     setIsLoading(true);
+
+    const request = await fetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const response = await request.json();
+
+    if (!request.ok) {
+      toast({
+        title: "Oops...",
+        description: response.error,
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Tente Novamente">Tente Novamente</ToastAction>
+        ),
+      });
+    } else {
+      router.push("/login");
+    }
 
     setData({
       name: "",

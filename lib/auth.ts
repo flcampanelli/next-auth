@@ -4,33 +4,59 @@ import GithubProvider from "next-auth/providers/github";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-import { db } from "@/lib/db"
+import { db as prisma } from "@/lib/db";
+
+import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db as any),
+  adapter: PrismaAdapter(prisma as any),
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_CLIENTID!,
-      clientSecret: process.env.GITHUB_SECRET!
+      clientSecret: process.env.GITHUB_SECRET!,
     }),
     CredentialProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "jason" },
         password: { label: "Password", type: "password" },
-        username: { label: "Name", type: "text", placeholder: "Jason Statham" }
+        username: { label: "Name", type: "text", placeholder: "Jason Statham" },
       },
       async authorize(credentials, req): Promise<any> {
-        console.log("authorize method", credentials)
-        const user = { email: "raff777@gmail.com", password: "123456", name: "Raffa" }
+        if (!credentials?.email || !credentials.password) {
+          throw new Error("Dados de login necessários.");
+        }
 
-        return user
-      }
-    })
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        // !user.hashedPassword: user registered with another provider
+        if (!user || !user.hashedPassword) {
+          throw new Error("Usuário não registrado através de credenciais.");
+        }
+
+        const isPasswordMatch = await bcrypt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
+
+        if (!isPasswordMatch) {
+          throw new Error("Senha incorreta.");
+        }
+
+        return user;
+      },
+    }),
   ],
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   secret: process.env.SECRET,
-  debug: process.env.NODE_ENV === "development"
-}
+  debug: process.env.NODE_ENV === "development",
+  pages: {
+    signIn: "/login",
+  },
+};

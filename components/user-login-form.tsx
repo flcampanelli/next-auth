@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+
+import { useRouter } from "next/navigation";
 
 interface UserLoginFormProps extends React.HtmlHTMLAttributes<HTMLDivElement> {}
 
@@ -20,6 +24,10 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     password: "",
   });
 
+  const { toast } = useToast();
+
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function onSubmit(e: React.SyntheticEvent) {
@@ -27,10 +35,23 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     setIsLoading(true);
 
     // must be the same name "credentials" declared in lib/auth
-    const res = await signIn<"credentials">("credentials", {
+    const response = await signIn<"credentials">("credentials", {
       ...data,
       redirect: false,
     });
+
+    if (response?.error) {
+      toast({
+        title: "Oops...",
+        description: response.error,
+        variant: "destructive",
+        action: (
+          <ToastAction altText="Tente Novamente">Tente Novamente</ToastAction>
+        ),
+      });
+    } else {
+      router.push("/");
+    }
 
     setData({
       email: "",

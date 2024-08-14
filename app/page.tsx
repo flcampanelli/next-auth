@@ -1,9 +1,9 @@
-import { getCurrentUser } from "@/lib/session";
+import ClientComponentAuth from "@/components/client-component-auth";
 
 export default async function Home() {
-  const user = await getCurrentUser()
-
   return (
-    <div>{JSON.stringify(user)}</div>
+    <section className="h-screen flex items-center justify-center">
+      <ClientComponentAuth />
+    </section>
   );
 }

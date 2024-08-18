@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { GitHubLoginButton } from "@/components/github-login-button";
 
 import { useRouter } from "next/navigation";
 
@@ -138,6 +139,17 @@ export function UserRegisterForm({
           </Button>
         </div>
       </form>
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Ou continue com
+          </span>
+        </div>
+      </div>
+      <GitHubLoginButton isLoading={isLoading} />
     </div>
   );
 }

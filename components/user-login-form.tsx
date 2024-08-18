@@ -9,6 +9,7 @@ import { signIn } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { GitHubLoginButton } from "@/components/github-login-button";
+import { GoogleLoginButton } from "@/components/google-login-button";
 
 import { useRouter } from "next/navigation";
 
@@ -123,7 +124,10 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
           </span>
         </div>
       </div>
-      <GitHubLoginButton isLoading={isLoading} />
+      <div className="grid gap-2">
+        <GoogleLoginButton isLoading={isLoading} />
+        <GitHubLoginButton isLoading={isLoading} />
+      </div>
     </div>
   );
 }

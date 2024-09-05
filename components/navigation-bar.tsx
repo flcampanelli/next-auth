@@ -63,9 +63,9 @@ export async function NavigationBar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative h-9 w-9 rounded-full"
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-9 w-9">
                       <AvatarImage
                         src={user.image ? user.image : ""}
                         alt="user avatar"

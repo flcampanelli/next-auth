@@ -20,10 +20,7 @@ export async function NavigationBar() {
   const user = await getCurrentUser();
 
   return (
-    <nav
-      className="sticky top-0 z-1 w-full px-4 py-2 lg:px-8 lg:py-3 shadow-sm border border-white/80 bg-opacity-80 
-      backdrop-blur-2xl backdrop-saturate-200"
-    >
+    <nav className="sticky top-0 z-1 w-full py-2 lg:py-3 shadow-sm bg-white">
       <div
         className="flex justify-between items-center px-4 mx-auto sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] 
         xl:max-w-[80rem]"

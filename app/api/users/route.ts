@@ -1,6 +1,6 @@
 import { db as prisma } from "@/lib/db";
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 import { NextRequest, NextResponse } from "next/server";
 

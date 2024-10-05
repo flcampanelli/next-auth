@@ -1,4 +1,5 @@
-import { getCurrentUser } from "@/lib/session";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
@@ -15,9 +16,19 @@ import {
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
-export async function NavigationBar() {
-  const user = await getCurrentUser();
+export default function NavigationBar() {
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const pathname = usePathname();
+  const noNavbarRoutes = ["/login", "/logout", "/register"];
+
+  if (noNavbarRoutes.includes(pathname)) {
+    return null;
+  }
 
   return (
     <nav className="sticky top-0 z-1 w-full py-2 lg:py-3 shadow-sm bg-white">
@@ -63,10 +74,7 @@ export async function NavigationBar() {
                     className="relative h-9 w-9 rounded-full"
                   >
                     <Avatar className="h-9 w-9">
-                      <AvatarImage
-                        src={user.image ? user.image : ""}
-                        alt="user avatar"
-                      />
+                      <AvatarImage src={user.image || ""} alt="user avatar" />
                       <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </Button>

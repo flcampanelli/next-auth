@@ -10,10 +10,43 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Minus, Plus, Star } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function ProductDetail() {
+interface IProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
+}
+
+async function getProduct(id: number): Promise<IProduct> {
+  const request = await fetch(`https://fakestoreapi.com/products/${id}`);
+  const data = await request.json();
+  console.log(data);
+
+  return data;
+}
+
+export default function ProductDetail({ params }: { params: { id: number } }) {
+  const [product, setProduct] = useState<IProduct | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    async function fetchProduct() {
+      const productData = await getProduct(params.id);
+      setProduct(productData);
+    }
+
+    fetchProduct();
+  }, [params.id]);
+
+  if (!product) return;
 
   return (
     <div className="container px-4 py-10 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
@@ -21,31 +54,43 @@ export default function ProductDetail() {
         <div className="space-y-4">
           <Card>
             <CardContent className="p-4">
-              <Image
-                src="https://placehold.co/400x400?text=Product%20Image"
-                alt="Product Image"
-                width={400}
-                height={400}
-                className="w-full h-auto rounded-lg"
-              />
+              <div className="relative w-[575px] h-[575px]">
+                <Image
+                  src={
+                    product.image ||
+                    "https://placehold.co/400x400?text=Product%20Image"
+                  }
+                  alt={product.title}
+                  className="w-full h-auto object-contain rounded-lg"
+                  fill
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
         <div className="space-y-6">
-          <h1 className="text-3xl font-bold">Product Name</h1>
+          <h1 className="text-3xl font-bold">{product.title}</h1>
           <div className="flex items-center space-x-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-primary" />
-            ))}
-            <span className="text-sm text-muted-foreground">(120 reviews)</span>
+            {[...Array(5)].map((_, i) => {
+              const starValue = i + 1;
+              return (
+                <Star
+                  key={i}
+                  className={`w-5 h-5 ${
+                    starValue <= Math.floor(product.rating.rate)
+                      ? "fill-primary"
+                      : "fill-muted"
+                  }`}
+                />
+              );
+            })}
+            <span className="text-sm text-muted-foreground">
+              ({product.rating.count})
+            </span>
           </div>
-          <p className="text-xl font-semibold">$199.99</p>
+          <p className="text-xl font-semibold">${product.price}</p>
           <p className="text-muted-foreground">
-            <p>
-              Lorem ipsum dolor sit amet. Et voluptas optio ut nulla numquam est
-              error nesciunt quo exercitationem dolorem vel deserunt quisquam.
-              Id consequatur iure ut inventore optio hic veritatis explicabo!
-            </p>
+            <p>{product.description}</p>
           </p>
           <div className="space-y-4">
             <div>
@@ -75,9 +120,7 @@ export default function ProductDetail() {
               <AccordionTrigger>Category</AccordionTrigger>
               <AccordionContent>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>item 1</li>
-                  <li>item 2</li>
-                  <li>item 3</li>
+                  <li>{product.category}</li>
                 </ul>
               </AccordionContent>
             </AccordionItem>

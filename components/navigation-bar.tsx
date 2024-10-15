@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LogOut } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function NavigationBar() {
@@ -31,7 +30,7 @@ export default function NavigationBar() {
   }
 
   return (
-    <nav className="sticky top-0 z-1 w-full py-2 lg:py-3 shadow-sm bg-white">
+    <nav className="sticky top-0 z-1 w-full py-2 lg:py-3 shadow-sm bg-white z-10">
       <div
         className="flex justify-between items-center px-4 mx-auto sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] 
         xl:max-w-[80rem]"

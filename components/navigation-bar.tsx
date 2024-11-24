@@ -30,15 +30,39 @@ export default function NavigationBar() {
   }
 
   return (
-    <nav className="sticky top-0 z-1 w-full py-2 lg:py-3 shadow-sm bg-white z-10">
+    <nav className="sticky top-0 z-1 w-full py-2 shadow-sm bg-white z-10">
       <div
         className="flex justify-between items-center px-4 mx-auto sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] 
         xl:max-w-[80rem]"
       >
-        <Link href="/" className="flex mr-4 cursor-pointer font-medium">
-          <Icons.fingerprint className="mr-2" />
-          Next Auth
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex md:mr-4 cursor-pointer font-medium">
+            <Icons.fingerprint className="md:mr-2" />
+            <span className="hidden md:block">Next Auth</span>
+          </Link>
+          <Link
+            href="/"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "sm" }),
+              "hover:bg-transparent",
+              "hover:text-gray-600",
+              "text-base"
+            )}
+          >
+            Eventos
+          </Link>
+          <Link
+            href="/products"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "sm" }),
+              "hover:bg-transparent",
+              "hover:text-gray-600",
+              "text-base"
+            )}
+          >
+            Produtos
+          </Link>
+        </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-x-2">
             {!user ? (
@@ -73,7 +97,11 @@ export default function NavigationBar() {
                     className="relative h-9 w-9 rounded-full"
                   >
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={user.image || ""} alt="user avatar" />
+                      <AvatarImage
+                        src={user.image || ""}
+                        alt="user avatar"
+                        className="select-none"
+                      />
                       <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </Button>
@@ -91,8 +119,10 @@ export default function NavigationBar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <span>Perfil</span>
+                    <DropdownMenuItem asChild>
+                      <Link href="/events/new">
+                        <span>Criar Evento</span>
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <span>Configurações</span>

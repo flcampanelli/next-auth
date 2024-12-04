@@ -6,10 +6,11 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { eventSchema } from "@/lib/validation/event-schema";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { z } from "zod";
 
 interface IEvent {
   title: string;
@@ -54,30 +55,39 @@ export default function NewEvent() {
     e.preventDefault();
     setIsLoading(true);
 
-    const request = await fetch("/api/events", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const validatedData = eventSchema.parse(data);
 
-    const response = await request.json();
-
-    if (!request.ok) {
-      toast({
-        title: "Oops...",
-        description: response.error,
-        variant: "destructive",
-        action: (
-          <ToastAction altText="Tente Novamente">Tente Novamente</ToastAction>
-        ),
+      const request = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validatedData),
       });
-    } else {
-      router.push("/");
-    }
 
-    setIsLoading(false);
+      const response = await request.json();
+
+      if (!request.ok) {
+        toast({
+          title: "Oops...",
+          description: response.error,
+          variant: "destructive",
+        });
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Oops...",
+          description: error.issues[0].message,
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function handleInputChange(
@@ -115,7 +125,9 @@ export default function NewEvent() {
         className="space-y-8 w-full md:w-3/4 lg:w-3/5 xl:w-1/2"
       >
         <div className="space-y-2">
-          <Label htmlFor="email">Título do Evento</Label>
+          <Label htmlFor="email">
+            Título do Evento <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="title"
             type="text"
@@ -141,7 +153,9 @@ export default function NewEvent() {
           />
         </div>
         <div className="w-72 space-y-2">
-          <Label>Data do Evento</Label>
+          <Label>
+            Data do Evento <span className="text-red-500">*</span>
+          </Label>
           <DateTimePicker
             granularity="minute"
             disabled={isLoading}
@@ -166,7 +180,9 @@ export default function NewEvent() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Endereço</Label>
+          <Label htmlFor="email">
+            Endereço <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="street"
             type="text"
@@ -180,7 +196,9 @@ export default function NewEvent() {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Cidade</Label>
+            <Label htmlFor="email">
+              Cidade <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="city"
               type="text"
@@ -193,7 +211,9 @@ export default function NewEvent() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Estado</Label>
+            <Label htmlFor="email">
+              Estado <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="state"
               type="text"
@@ -206,7 +226,9 @@ export default function NewEvent() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Cep</Label>
+            <Label htmlFor="email">
+              Cep <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="postalCode"
               type="text"
@@ -245,7 +267,9 @@ export default function NewEvent() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Preço do Ingresso</Label>
+          <Label htmlFor="email">
+            Preço do Ingresso <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="price"
             type="number"

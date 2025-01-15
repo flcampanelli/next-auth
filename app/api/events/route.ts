@@ -4,6 +4,24 @@ import { eventSchema } from "@/lib/validation/event-schema";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+export async function GET(req: NextRequest) {
+  try {
+    const events = await prisma.event.findMany({
+      select: {
+        id: true,
+        banner: true,
+        title: true,
+        date: true,
+        placeName: true,
+      },
+    });
+
+    return NextResponse.json(events);
+  } catch (error) {
+    return NextResponse.json({ error: "Erro inesperado" }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   const data = await request.json();
 

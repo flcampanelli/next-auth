@@ -4,7 +4,7 @@ import { eventSchema } from "@/lib/validation/event-schema";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const events = await prisma.event.findMany({
       select: {

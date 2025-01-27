@@ -1,11 +1,8 @@
 "use client";
 
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import EventDetailsCard from "@/components/event-details-card";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { CalendarIcon, Clock, MapPinIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -83,47 +80,15 @@ export default function EventDetail({ params }: { params: { id: string } }) {
             {formattedDescription(event.description)}
           </div>
         </div>
-        <div className="col-span-1 order-1 lg:order-2 ">
-          <Card>
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-center">
-                {event.title}
-              </h2>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Button
-                variant="ghost"
-                className="relative h-20 w-20 rounded-full"
-              >
-                <Avatar className="h-20 w-20">
-                  <AvatarImage
-                    src="https://placehold.co/400"
-                    alt="user avatar"
-                    className="select-none"
-                  />
-                </Avatar>
-              </Button>
-              <div className="mt-6 flex items-center text-sm">
-                <CalendarIcon className="mr-1 h-4 w-4" />
-                {formattedDate}
-              </div>
-              <div className="mt-2 flex items-center text-sm">
-                <Clock className="mr-1 h-4 w-4" />
-                {formattedHour}
-              </div>
-              <div className="mt-2 flex items-center text-sm font-semibold">
-                <MapPinIcon className="mr-1 h-4 w-4" />
-                {event.placeName}
-              </div>
-              <div className="flex items-center text-sm text-left">
-                <MapPinIcon className="invisible mr-1 h-4 w-4" />
-                <span className="ml-1">{formattedAddress}</span>
-              </div>
-              <Button variant="default" className="mt-6 w-full">
-                Comprar
-              </Button>
-            </CardContent>
-          </Card>
+        <div className="col-span-1 order-1 lg:order-2">
+          <EventDetailsCard
+            title={event.title}
+            logo={event.logo}
+            place={event.placeName}
+            date={formattedDate}
+            hour={formattedHour}
+            address={formattedAddress}
+          />
         </div>
       </div>
     </div>

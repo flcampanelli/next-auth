@@ -1,6 +1,7 @@
 "use client";
 
 import EventDetailsCard from "@/components/event-details-card";
+import EventSkeleton from "@/components/event-skeleton";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Image from "next/image";
@@ -54,7 +55,7 @@ export default function EventDetail({ params }: { params: { id: string } }) {
     getEventById(params.id);
   }, [params.id]);
 
-  if (!event) return <h2>Loading...</h2>;
+  if (!event) return <EventSkeleton />;
 
   const formattedDate = format(event.date, "eeee, dd 'de' MMMM", {
     locale: ptBR,

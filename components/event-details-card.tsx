@@ -21,7 +21,7 @@ export default function EventDetailsCard({
   address,
 }: EventDetailsCardProps) {
   return (
-    <Card>
+    <Card className="sticky top-16">
       <CardHeader>
         <h2 className="text-xl font-semibold text-center">{title}</h2>
       </CardHeader>

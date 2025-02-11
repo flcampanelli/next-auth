@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
 import { eventSchema } from "@/lib/validation/event-schema";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -33,6 +34,8 @@ export default function NewEvent() {
 
   const router = useRouter();
 
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [data, setData] = useState<IEvent>({
@@ -58,12 +61,23 @@ export default function NewEvent() {
     try {
       const validatedData = eventSchema.parse(data);
 
+      let updatedData = { ...validatedData };
+
+      if (logoFile) {
+        const logoUrl = await uploadImage(logoFile, "logo");
+        if (logoUrl) updatedData = { ...updatedData, logo: logoUrl };
+      }
+      if (bannerFile) {
+        const bannerUrl = await uploadImage(bannerFile, "banner");
+        if (bannerUrl) updatedData = { ...updatedData, banner: bannerUrl };
+      }
+
       const request = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(validatedData),
+        body: JSON.stringify(updatedData),
       });
 
       const response = await request.json();
@@ -118,6 +132,61 @@ export default function NewEvent() {
     }));
   }
 
+  async function uploadImage(
+    file: File,
+    field: "logo" | "banner"
+  ): Promise<string | undefined> {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `events/${field}/${fileName}`;
+
+    try {
+      const { data, error } = await supabase.storage
+        .from("images")
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: publicData } = supabase.storage
+        .from("images")
+        .getPublicUrl(filePath);
+
+      if (!publicData?.publicUrl) {
+        toast({
+          title: "Oops...",
+          description: "Falha ao obter URL",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const publicUrl = publicData.publicUrl;
+      return publicUrl;
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Oops...",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Oops...",
+          description: "Erro deconhecido: " + error,
+          variant: "destructive",
+        });
+      }
+    }
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { files, name } = e.target;
+    if (files?.[0]) {
+      const file = files[0];
+      name === "logo" ? setLogoFile(file) : setBannerFile(file);
+    }
+  }
+
   return (
     <div className="m-10 mx-auto px-4 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
       <form
@@ -140,16 +209,16 @@ export default function NewEvent() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Link do Logo</Label>
+          <Label htmlFor="email">Logo</Label>
           <Input
             id="logo"
-            type="text"
+            type="file"
+            accept="image/*"
             autoCapitalize="none"
             autoCorrect="off"
             disabled={isLoading}
             name="logo"
-            value={data.logo}
-            onChange={handleInputChange}
+            onChange={handleFileChange}
           />
         </div>
         <div className="w-72 space-y-2">
@@ -251,19 +320,20 @@ export default function NewEvent() {
             disabled={isLoading}
             value={data.description}
             onChange={handleInputChange}
+            rows={6}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Link do Banner</Label>
+          <Label htmlFor="email">Banner</Label>
           <Input
             id="banner"
-            type="text"
+            type="file"
+            accept="image/*"
             autoCapitalize="none"
             autoCorrect="off"
             disabled={isLoading}
             name="banner"
-            value={data.banner}
-            onChange={handleInputChange}
+            onChange={handleFileChange}
           />
         </div>
         <div className="space-y-2">

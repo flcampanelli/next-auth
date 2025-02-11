@@ -29,7 +29,7 @@ export default async function Home() {
         <EventCard
           key={id}
           id={id}
-          image={"https://placehold.co/400x600?text=Event%20Image"}
+          banner={banner}
           title={title}
           date={date}
           place={placeName}

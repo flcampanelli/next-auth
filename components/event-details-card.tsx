@@ -1,6 +1,7 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import clsx from "clsx";
 import { CalendarIcon, Clock, MapPinIcon } from "lucide-react";
 
 interface EventDetailsCardProps {
@@ -21,7 +22,7 @@ export default function EventDetailsCard({
   address,
 }: EventDetailsCardProps) {
   return (
-    <Card className="sticky top-16">
+    <Card className="sticky top-16 flex flex-col justify-around min-h-96">
       <CardHeader>
         <h2 className="text-xl font-semibold text-center">{title}</h2>
       </CardHeader>
@@ -39,13 +40,25 @@ export default function EventDetailsCard({
           <Clock className="mr-1 h-4 w-4" />
           {hour}
         </div>
-        <div className="mt-2 flex items-center text-sm font-semibold">
-          <MapPinIcon className="mr-1 h-4 w-4" />
-          {place}
-        </div>
-        <div className="flex items-center text-sm text-left">
-          <MapPinIcon className="invisible mr-1 h-4 w-4" />
-          <span className="ml-1">{address}</span>
+        {place && (
+          <div className="mt-2 flex items-center text-sm font-semibold">
+            <MapPinIcon className="mr-1 h-4 w-4" />
+            {place}
+          </div>
+        )}
+        <div
+          className={clsx("flex text-sm text-left", {
+            "items-center": place,
+            "mt-2": !place,
+          })}
+        >
+          <MapPinIcon
+            className={clsx("mr-1 h-4 w-4 flex-shrink-0", {
+              hidden: place,
+              "mt-[2px]": !place,
+            })}
+          />
+          <span className={clsx({ "ml-5": place })}>{address}</span>
         </div>
         <Button variant="default" className="mt-6 w-full">
           Comprar

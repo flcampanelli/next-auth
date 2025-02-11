@@ -28,11 +28,14 @@ interface IEvent {
 }
 
 const formattedDescription = (description: string) => {
-  return description
-    .split(/\n/g)
-    .map((line, index) =>
-      line === "" ? <br key={index} /> : <p key={index}>{line}</p>
-    );
+  return (
+    description &&
+    description
+      .split(/\n/g)
+      .map((line, index) =>
+        line === "" ? <br key={index} /> : <p key={index}>{line}</p>
+      )
+  );
 };
 
 export default function EventDetail({ params }: { params: { id: string } }) {
@@ -69,17 +72,24 @@ export default function EventDetail({ params }: { params: { id: string } }) {
         <div className="col-span-3 order-2 lg:order-1">
           <div className="relative w-full h-96">
             <Image
-              src="https://placehold.co/400x400?text=Event%20Banner"
+              src={
+                event.banner ||
+                "https://placehold.co/400x400?text=Event%20Banner"
+              }
               alt=""
               className="rounded-lg"
               objectFit="cover"
               fill
             />
           </div>
-          <h3 className="mt-8 text-xl font-medium">Descrição do Evento</h3>
-          <div className="mt-6 text-[15px] text-muted-foreground">
-            {formattedDescription(event.description)}
-          </div>
+          {event.description && (
+            <>
+              <h3 className="mt-8 text-xl font-medium">Descrição do Evento</h3>
+              <div className="mt-6 text-[15px] text-muted-foreground">
+                {formattedDescription(event.description)}
+              </div>
+            </>
+          )}
         </div>
         <div className="col-span-1 order-1 lg:order-2">
           <EventDetailsCard

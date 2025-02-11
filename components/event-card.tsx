@@ -5,30 +5,37 @@ import Link from "next/link";
 
 interface EventCardProps {
   id: number;
-  image: string;
+  banner: string;
   title: string;
   date: string;
   place: string;
 }
 
-export function EventCard({ id, image, title, date, place }: EventCardProps) {
+export function EventCard({ id, banner, title, date, place }: EventCardProps) {
   return (
     <Link href={`/events/${id}`}>
-      <Card>
+      <Card className="flex flex-col h-full">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
-            <Image src={image} alt={title} fill className="object-cover" />
+            <Image
+              src={banner || "https://placehold.co/400x400?text=Event%20Banner"}
+              alt={title}
+              fill
+              className="object-cover rounded-t-md"
+            />
           </div>
         </CardHeader>
-        <CardContent className="p-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <div className="mt-2 flex items-center text-sm text-muted-foreground">
-            <CalendarIcon className="mr-1 h-4 w-4" />
-            {date}
-          </div>
-          <div className="mt-1 flex items-center text-sm text-muted-foreground">
-            <MapPinIcon className="mr-1 h-4 w-4" />
-            {place}
+        <CardContent className="p-4 flex flex-col flex-grow justify-between">
+          <h3 className="text-lg font-semibold line-clamp-2">{title}</h3>
+          <div>
+            <div className="mt-2 flex items-center text-sm text-muted-foreground">
+              <CalendarIcon className="mr-1 h-4 w-4" />
+              {date}
+            </div>
+            <div className="mt-1 flex items-center text-sm text-muted-foreground">
+              <MapPinIcon className="mr-1 h-4 w-4" />
+              {place}
+            </div>
           </div>
         </CardContent>
       </Card>

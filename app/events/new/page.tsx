@@ -1,6 +1,7 @@
 "use client";
 
 import { Icons } from "@/components/icons";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { eventSchema } from "@/lib/validation/event-schema";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
@@ -36,6 +38,8 @@ export default function NewEvent() {
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [data, setData] = useState<IEvent>({
@@ -172,7 +176,7 @@ export default function NewEvent() {
       } else {
         toast({
           title: "Oops...",
-          description: "Erro deconhecido: " + error,
+          description: "Erro desconhecido: " + error,
           variant: "destructive",
         });
       }
@@ -183,7 +187,15 @@ export default function NewEvent() {
     const { files, name } = e.target;
     if (files?.[0]) {
       const file = files[0];
-      name === "logo" ? setLogoFile(file) : setBannerFile(file);
+      const previewUrl = URL.createObjectURL(file);
+
+      if (name === "logo") {
+        setLogoFile(file);
+        setLogoPreview(previewUrl);
+      } else {
+        setBannerFile(file);
+        setBannerPreview(previewUrl);
+      }
     }
   }
 
@@ -208,19 +220,29 @@ export default function NewEvent() {
             onChange={handleInputChange}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Logo</Label>
-          <Input
-            id="logo"
-            type="file"
-            accept="image/*"
-            autoCapitalize="none"
-            autoCorrect="off"
-            disabled={isLoading}
-            name="logo"
-            onChange={handleFileChange}
-          />
+        <div className="flex items-center">
+          <Avatar className="h-20 w-20 mr-4">
+            <AvatarImage
+              src={logoPreview || "https://placehold.co/200x200?text=Logo"}
+              alt="event logo"
+              className="select-none object-cover"
+            />
+          </Avatar>
+          <div className="w-96 space-y-2">
+            <Label htmlFor="email">Logo</Label>
+            <Input
+              id="logo"
+              type="file"
+              accept="image/*"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              name="logo"
+              onChange={handleFileChange}
+            />
+          </div>
         </div>
+
         <div className="w-72 space-y-2">
           <Label>
             Data do Evento <span className="text-red-500">*</span>
@@ -324,17 +346,31 @@ export default function NewEvent() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Banner</Label>
-          <Input
-            id="banner"
-            type="file"
-            accept="image/*"
-            autoCapitalize="none"
-            autoCorrect="off"
-            disabled={isLoading}
-            name="banner"
-            onChange={handleFileChange}
-          />
+          <div>
+            <Label htmlFor="email">Banner</Label>
+            <Input
+              id="banner"
+              type="file"
+              accept="image/*"
+              autoCapitalize="none"
+              autoCorrect="off"
+              disabled={isLoading}
+              name="banner"
+              onChange={handleFileChange}
+            />
+          </div>
+          <div className="relative w-full h-64">
+            <Image
+              src={
+                bannerPreview ||
+                "https://placehold.co/400x400?text=Event%20Banner"
+              }
+              alt="event banner"
+              className="rounded-lg"
+              objectFit="cover"
+              fill
+            />
+          </div>
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">

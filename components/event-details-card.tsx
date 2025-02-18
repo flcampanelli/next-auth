@@ -29,7 +29,11 @@ export default function EventDetailsCard({
       <CardContent className="text-center">
         <Button variant="ghost" className="relative h-20 w-20 rounded-full">
           <Avatar className="h-20 w-20">
-            <AvatarImage src={logo} alt="user avatar" className="select-none" />
+            <AvatarImage
+              src={logo}
+              alt="user avatar"
+              className="select-none object-cover"
+            />
           </Avatar>
         </Button>
         <div className="mt-6 flex items-center text-sm">

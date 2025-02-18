@@ -1,4 +1,5 @@
 import { EventCard } from "@/components/event-card";
+import { formatDate } from "@/lib/utils";
 
 interface IEvent {
   id: number;
@@ -31,7 +32,7 @@ export default async function Home() {
           id={id}
           banner={banner}
           title={title}
-          date={date}
+          date={formatDate(date)}
           place={placeName}
         />
       ))}

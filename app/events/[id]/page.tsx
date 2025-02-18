@@ -2,8 +2,7 @@
 
 import EventDetailsCard from "@/components/event-details-card";
 import EventSkeleton from "@/components/event-skeleton";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDate, formatHour } from "@/lib/utils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -60,10 +59,8 @@ export default function EventDetail({ params }: { params: { id: string } }) {
 
   if (!event) return <EventSkeleton />;
 
-  const formattedDate = format(event.date, "eeee, dd 'de' MMMM", {
-    locale: ptBR,
-  }).replace(/^\w/, (c) => c.toUpperCase());
-  const formattedHour = format(new Date(event.date), "HH:mm");
+  const formattedDate = formatDate(event.date);
+  const formattedHour = formatHour(event.date);
   const formattedAddress = `${event.address.street}, ${event.address.postalCode}, ${event.address.city}, ${event.address.state} `;
 
   return (

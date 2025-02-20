@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { eventSchema } from "@/lib/validation/event-schema";
+import { LucideCircleX } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -199,6 +200,16 @@ export default function NewEvent() {
     }
   }
 
+  function handleRemoveFile(name: string) {
+    if (name === "logo") {
+      setLogoFile(null);
+      setLogoPreview(null);
+    } else {
+      setBannerFile(null);
+      setBannerPreview(null);
+    }
+  }
+
   return (
     <div className="m-10 mx-auto px-4 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
       <form
@@ -221,13 +232,25 @@ export default function NewEvent() {
           />
         </div>
         <div className="flex items-center">
-          <Avatar className="h-20 w-20 mr-4">
-            <AvatarImage
-              src={logoPreview || "https://placehold.co/200x200?text=Logo"}
-              alt="event logo"
-              className="select-none object-cover"
-            />
-          </Avatar>
+          <div className="relative">
+            {logoPreview && (
+              <button
+                type="button"
+                className="absolute z-10 right-3 bg-white text-red-500 rounded-full"
+                onClick={() => handleRemoveFile("logo")}
+              >
+                <LucideCircleX />
+              </button>
+            )}
+
+            <Avatar className="h-20 w-20 mr-4">
+              <AvatarImage
+                src={logoPreview || "https://placehold.co/200x200?text=Logo"}
+                alt="event logo"
+                className="select-none object-cover"
+              />
+            </Avatar>
+          </div>
           <div className="w-96 space-y-2">
             <Label htmlFor="email">Logo</Label>
             <Input
@@ -360,6 +383,16 @@ export default function NewEvent() {
             />
           </div>
           <div className="relative w-full h-64">
+            {bannerPreview && (
+              <button
+                type="button"
+                className="absolute z-10 -top-2 -right-2 bg-white text-red-500 rounded-full"
+                onClick={() => handleRemoveFile("banner")}
+              >
+                <LucideCircleX />
+              </button>
+            )}
+
             <Image
               src={
                 bannerPreview ||

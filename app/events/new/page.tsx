@@ -201,12 +201,16 @@ export default function NewEvent() {
   }
 
   function handleRemoveFile(name: string) {
+    const input = document.getElementById(name) as HTMLInputElement | null;
+
     if (name === "logo") {
       setLogoFile(null);
       setLogoPreview(null);
+      if (input) input.value = "";
     } else {
       setBannerFile(null);
       setBannerPreview(null);
+      if (input) input.value = "";
     }
   }
 

@@ -1,17 +1,17 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
-import { signIn } from "next-auth/react";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+
 import { GitHubLoginButton } from "@/components/github-login-button";
 import { GoogleLoginButton } from "@/components/google-login-button";
-
-import { useRouter } from "next/navigation";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 interface UserLoginFormProps extends React.HtmlHTMLAttributes<HTMLDivElement> {}
 
@@ -27,8 +27,9 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
   });
 
   const { toast } = useToast();
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -39,7 +40,8 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
     // must be the same name "credentials" declared in lib/auth
     const response = await signIn<"credentials">("credentials", {
       ...data,
-      redirect: false,
+      redirect: false, // avoids unnecessary reloads
+      callbackUrl,
     });
 
     if (response?.error) {
@@ -52,7 +54,7 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
         ),
       });
     } else {
-      router.push("/");
+      router.push(callbackUrl);
     }
 
     setData({
@@ -125,8 +127,8 @@ export function UserLoginForm({ className, ...props }: UserLoginFormProps) {
         </div>
       </div>
       <div className="grid gap-2">
-        <GoogleLoginButton isLoading={isLoading} />
-        <GitHubLoginButton isLoading={isLoading} />
+        <GoogleLoginButton isLoading={isLoading} callbackUrl={callbackUrl} />
+        <GitHubLoginButton isLoading={isLoading} callbackUrl={callbackUrl} />
       </div>
     </div>
   );

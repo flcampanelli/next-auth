@@ -94,6 +94,7 @@ export default function NewEvent() {
           variant: "destructive",
         });
       } else {
+        sessionStorage.setItem("newEventCreated", "true");
         router.push(`/events/${result.id}`);
       }
     } catch (error) {

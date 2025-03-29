@@ -5,6 +5,7 @@ import EventSkeleton from "@/components/event-skeleton";
 import { formatDate, formatHour } from "@/lib/utils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 
 interface IEvent {
   id: string;
@@ -39,6 +40,15 @@ const formattedDescription = (description: string) => {
 
 export default function EventDetail({ params }: { params: { id: string } }) {
   const [event, setEvent] = useState<IEvent | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    const isNewEvent = sessionStorage.getItem("newEventCreated") === "true";
+    if (isNewEvent) {
+      setShowConfetti(true);
+      sessionStorage.removeItem("newEventCreated");
+    }
+  }, []);
 
   useEffect(() => {
     async function getEventById(eventId: string) {
@@ -65,6 +75,16 @@ export default function EventDetail({ params }: { params: { id: string } }) {
 
   return (
     <div className="container px-4 py-10 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
+      {showConfetti && (
+        <Confetti
+          recycle={false}
+          numberOfPieces={300}
+          tweenDuration={2000}
+          initialVelocityY={-10}
+          gravity={0.3}
+          style={{ zIndex: 50, position: "fixed" }}
+        />
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-8 lg:gap-x-8">
         <div className="col-span-3 order-2 lg:order-1">
           <div className="relative w-full h-96">
@@ -73,10 +93,11 @@ export default function EventDetail({ params }: { params: { id: string } }) {
                 event.banner ||
                 "https://placehold.co/400x400?text=Event%20Banner"
               }
-              alt=""
+              alt={`${event.title} banner`}
               className="rounded-lg"
               objectFit="cover"
               fill
+              priority
             />
           </div>
           {event.description && (

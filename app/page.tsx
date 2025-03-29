@@ -12,6 +12,7 @@ interface IEvent {
 async function getAllEvents(): Promise<IEvent[]> {
   const response = await fetch("http://localhost:3000/api/events", {
     method: "GET",
+    cache: "no-store",
   });
 
   const events = await response.json();

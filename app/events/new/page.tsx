@@ -77,7 +77,7 @@ export default function NewEvent() {
         if (bannerUrl) updatedData = { ...updatedData, banner: bannerUrl };
       }
 
-      const request = await fetch("/api/events", {
+      const response = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,16 +85,16 @@ export default function NewEvent() {
         body: JSON.stringify(updatedData),
       });
 
-      const response = await request.json();
+      const result = await response.json();
 
-      if (!request.ok) {
+      if (!response.ok) {
         toast({
           title: "Oops...",
-          description: response.error,
+          description: result.error,
           variant: "destructive",
         });
       } else {
-        router.push("/");
+        router.push(`/events/${result.id}`);
       }
     } catch (error) {
       if (error instanceof z.ZodError) {

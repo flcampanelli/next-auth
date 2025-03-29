@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { success: "Evento criado com sucesso" },
+      { success: "Evento criado com sucesso", id: event.id },
       { status: 201 }
     );
   } catch (error) {

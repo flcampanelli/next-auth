@@ -2,6 +2,7 @@
 
 import EventDetailsCard from "@/components/event-details-card";
 import EventSkeleton from "@/components/event-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatHour } from "@/lib/utils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -41,14 +42,7 @@ const formattedDescription = (description: string) => {
 export default function EventDetail({ params }: { params: { id: string } }) {
   const [event, setEvent] = useState<IEvent | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
-
-  useEffect(() => {
-    const isNewEvent = sessionStorage.getItem("newEventCreated") === "true";
-    if (isNewEvent) {
-      setShowConfetti(true);
-      sessionStorage.removeItem("newEventCreated");
-    }
-  }, []);
+  const [isLoadingImage, setIsLoadingImage] = useState(true);
 
   useEffect(() => {
     async function getEventById(eventId: string) {
@@ -73,6 +67,15 @@ export default function EventDetail({ params }: { params: { id: string } }) {
   const formattedHour = formatHour(event.date);
   const formattedAddress = `${event.address.street}, ${event.address.postalCode}, ${event.address.city}, ${event.address.state} `;
 
+  function handleLoadingComplete() {
+    setIsLoadingImage(false);
+    const isNewEvent = sessionStorage.getItem("newEventCreated") === "true";
+    if (isNewEvent) {
+      setShowConfetti(true);
+      sessionStorage.removeItem("newEventCreated");
+    }
+  }
+
   return (
     <div className="container px-4 py-10 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
       {showConfetti && (
@@ -88,6 +91,9 @@ export default function EventDetail({ params }: { params: { id: string } }) {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-y-8 lg:gap-x-8">
         <div className="col-span-3 order-2 lg:order-1">
           <div className="relative w-full h-96">
+            {isLoadingImage && (
+              <Skeleton className="w-full h-full rounded-lg" />
+            )}
             <Image
               src={
                 event.banner ||
@@ -97,7 +103,7 @@ export default function EventDetail({ params }: { params: { id: string } }) {
               className="rounded-lg"
               objectFit="cover"
               fill
-              priority
+              onLoadingComplete={() => handleLoadingComplete()}
             />
           </div>
           {event.description && (

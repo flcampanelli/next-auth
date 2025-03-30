@@ -243,6 +243,7 @@ export default function NewEvent() {
                 type="button"
                 className="absolute z-10 right-3 bg-white text-red-500 rounded-full"
                 onClick={() => handleRemoveFile("logo")}
+                disabled={isLoading}
               >
                 <LucideCircleX />
               </button>
@@ -393,6 +394,7 @@ export default function NewEvent() {
                 type="button"
                 className="absolute z-10 -top-2 -right-2 bg-white text-red-500 rounded-full"
                 onClick={() => handleRemoveFile("banner")}
+                disabled={isLoading}
               >
                 <LucideCircleX />
               </button>

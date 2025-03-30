@@ -2,7 +2,20 @@
 const nextConfig = {
   images: {
     dangerouslyAllowSVG: true,
-    domains: ["fakestoreapi.com", "placehold.co", "ltyzypxqrvsyxeuchgtt.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "fakestoreapi.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "ltyzypxqrvsyxeuchgtt.supabase.co",
+      },
+    ],
   },
 };
 

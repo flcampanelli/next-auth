@@ -277,13 +277,12 @@ export default function NewEvent() {
             Data do Evento <span className="text-red-500">*</span>
           </Label>
           <DateTimePicker
-            granularity="minute"
-            disabled={isLoading}
-            value={data.date || undefined}
-            onChange={(value) =>
+            date={data.date || undefined}
+            setDate={(value) =>
               handleDateChange({ name: "date", value: value || null })
             }
             placeholder="Selecione uma data"
+            disabled={isLoading}
           />
         </div>
         <div className="space-y-2">

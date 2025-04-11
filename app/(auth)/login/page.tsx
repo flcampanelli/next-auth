@@ -1,10 +1,12 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 
-import Link from "next/link";
 import { Command } from "lucide-react";
+import Link from "next/link";
 
-import { UserLoginForm } from "@/components/user-login-form";
 import AuthButton from "@/components/auth-button";
+import { UserLoginForm } from "@/components/user-login-form";
+import { UserLoginFormSkeleton } from "@/components/user-login-form-skeleton";
 
 export const metadata: Metadata = {
   title: "Autenticação",
@@ -35,7 +37,9 @@ export default async function Login() {
               Entre com seus dados de Login
             </p>
           </div>
-          <UserLoginForm />
+          <Suspense fallback={<UserLoginFormSkeleton />}>
+            <UserLoginForm />
+          </Suspense>
           <p className="px-8 text-center text-sm text-muted-foreground">
             Ao clicar em continuar, você concorda com nossos{" "}
             <Link

@@ -1,4 +1,5 @@
 import { EventCard } from "@/components/event-card";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import { formatDate } from "@/lib/utils";
 
 interface IEvent {
@@ -10,7 +11,8 @@ interface IEvent {
 }
 
 async function getAllEvents(): Promise<IEvent[]> {
-  const response = await fetch("http://localhost:3000/api/events", {
+  const baseUrl = getBaseUrl();
+  const response = await fetch(`${baseUrl}/api/events`, {
     method: "GET",
     cache: "no-store",
   });

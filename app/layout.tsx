@@ -1,10 +1,10 @@
+import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/globals.css";
 
+import { AuthProvider } from "@/components/AuthProvider";
+import { NavigationBar } from "@/components/NavigationBar";
 import { Toaster } from "@/components/ui/toaster";
-import AuthProvider from "@/components/auth-provider";
-import NavigationBar from "@/components/navigation-bar";
 
 const inter = Inter({ subsets: ["latin"] });
 

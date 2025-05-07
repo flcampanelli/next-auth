@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 
-import Link from "next/link";
 import { Command } from "lucide-react";
+import Link from "next/link";
 
-import { UserRegisterForm } from "@/components/user-register-form";
-import AuthButton from "@/components/auth-button";
+import { AuthButton } from "@/components/AuthButton";
+import { UserRegisterForm } from "@/components/UserRegisterForm";
 
 export const metadata: Metadata = {
   title: "Cadastro",

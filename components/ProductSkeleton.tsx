@@ -7,7 +7,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function ProductSkeleton() {
+export function ProductSkeleton() {
   return (
     <div className="container px-4 py-10 sm:max-w-[40rem] md:max-w-[48rem] lg:max-w-[64rem] xl:max-w-[80rem]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

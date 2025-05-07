@@ -13,7 +13,7 @@ interface EventDetailsCardProps {
   address: string;
 }
 
-export default function EventDetailsCard({
+export function EventDetailsCard({
   title,
   logo,
   date,

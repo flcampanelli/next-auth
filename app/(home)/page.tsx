@@ -1,5 +1,5 @@
 import { EventCard } from "@/components/Events/EventCard";
-import { getBaseUrl } from "@/lib/getBaseUrl";
+import { getBaseUrl } from "@/lib/get-base-url";
 import { formatDate } from "@/lib/utils";
 
 interface IEvent {

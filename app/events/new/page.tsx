@@ -7,7 +7,7 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/lib/supabase";
 import { eventSchema } from "@/lib/validation/event-schema";
 import { LucideCircleX } from "lucide-react";

@@ -1,7 +1,7 @@
 "use client";
 
-import { EventDetailsCard } from "@/components/EventDetailsCard";
-import { EventSkeleton } from "@/components/EventSkeleton";
+import { EventDetailsCard } from "@/components/Events/EventDetailsCard";
+import { EventSkeleton } from "@/components/Events/EventSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatHour } from "@/lib/utils";
 import Image from "next/image";

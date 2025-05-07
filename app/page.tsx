@@ -1,4 +1,4 @@
-import { EventCard } from "@/components/EventCard";
+import { EventCard } from "@/components/Events/EventCard";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 import { formatDate } from "@/lib/utils";
 

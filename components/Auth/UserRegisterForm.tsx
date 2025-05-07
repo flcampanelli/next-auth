@@ -1,7 +1,7 @@
 "use client";
-import { GitHubLoginButton } from "@/components/GithubLoginButton";
-import { GoogleLoginButton } from "@/components/GoogleLoginButton";
-import { Icons } from "@/components/Icons";
+import { GitHubLoginButton } from "@/components/Auth/GithubLoginButton";
+import { GoogleLoginButton } from "@/components/Auth/GoogleLoginButton";
+import { Icons } from "@/components/Common/Icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

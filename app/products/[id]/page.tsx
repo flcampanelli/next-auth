@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductSkeleton } from "@/components/ProductSkeleton";
+import { ProductSkeleton } from "@/components/Products/ProductSkeleton";
 import {
   Accordion,
   AccordionContent,

@@ -1,19 +1,19 @@
-import { Icons } from "@/components/Icons";
+import { Icons } from "@/components/Common/Icons";
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 
-interface GitHubLoginButtonProps {
+interface GoogleLoginButtonProps {
   isLoading: boolean;
   callbackUrl?: string;
 }
 
-export function GitHubLoginButton({
+export function GoogleLoginButton({
   isLoading,
   callbackUrl = "/",
-}: GitHubLoginButtonProps) {
+}: GoogleLoginButtonProps) {
   return (
     <Button
-      onClick={() => signIn("github", { callbackUrl })}
+      onClick={() => signIn("google", { callbackUrl })}
       variant="outline"
       type="button"
       disabled={isLoading}
@@ -21,9 +21,9 @@ export function GitHubLoginButton({
       {isLoading ? (
         <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
       ) : (
-        <Icons.gitHub className="mr-2 h-4 w-4" />
+        <Icons.google className="mr-2 h-4 w-4" />
       )}{" "}
-      GitHub
+      Google
     </Button>
   );
 }

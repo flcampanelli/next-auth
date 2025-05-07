@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import { Command } from "lucide-react";
 import Link from "next/link";
 
-import { AuthButton } from "@/components/AuthButton";
-import { UserLoginForm } from "@/components/UserLoginForm";
-import { UserLoginFormSkeleton } from "@/components/UserLoginFormSkeleton";
+import { AuthButton } from "@/components/Auth/AuthButton";
+import { UserLoginForm } from "@/components/Auth/UserLoginForm";
+import { UserLoginFormSkeleton } from "@/components/Auth/UserLoginFormSkeleton";
 
 export const metadata: Metadata = {
   title: "Autenticação",

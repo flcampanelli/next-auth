@@ -5,10 +5,16 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/lib/supabase";
 import { LucideCircleX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function NewOrganizer() {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -22,7 +28,7 @@ export default function NewOrganizer() {
       state: "",
       postalCode: "",
     },
-    email: "",
+    contactEmail: "",
     socialLinks: {
       facebook: "",
       instagram: "",
@@ -33,6 +39,88 @@ export default function NewOrganizer() {
 
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      let data = { ...organization };
+
+      if (logoFile) {
+        const logoUrl = await uploadImage(logoFile);
+        if (logoUrl) data = { ...organization, logo: logoUrl };
+      }
+
+      const response = await fetch("/api/organizers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Oops...",
+          description: result.error,
+          variant: "destructive",
+        });
+      } else {
+        router.push("/events/new");
+      }
+    } catch (error) {
+      toast({
+        title: "Oops...",
+        description: String(error),
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function uploadImage(file: File): Promise<string | undefined> {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `events/logo/${fileName}`;
+
+    try {
+      const { data, error } = await supabase.storage
+        .from("images")
+        .upload(filePath, file);
+
+      if (error) throw error;
+
+      const { data: publicData } = supabase.storage
+        .from("images")
+        .getPublicUrl(filePath);
+
+      if (!publicData?.publicUrl) {
+        toast({
+          title: "Oops...",
+          description: "Falha ao obter URL",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const publicUrl = publicData.publicUrl;
+      return publicUrl;
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Oops...",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Oops...",
+          description: "Erro desconhecido: " + error,
+          variant: "destructive",
+        });
+      }
+    }
   }
 
   function handleInputChange(
@@ -90,7 +178,7 @@ export default function NewOrganizer() {
         className="space-y-8 w-full md:w-3/4 lg:w-3/5 xl:w-1/2"
       >
         <div className="space-y-2">
-          <Label htmlFor="email">
+          <Label htmlFor="name">
             Nome da Organização <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -126,7 +214,7 @@ export default function NewOrganizer() {
             </Avatar>
           </div>
           <div className="w-96 space-y-2">
-            <Label htmlFor="email">Logo</Label>
+            <Label htmlFor="logo">Logo</Label>
             <Input
               id="logo"
               type="file"
@@ -158,7 +246,7 @@ export default function NewOrganizer() {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="email">
+            <Label htmlFor="city">
               Cidade <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -173,7 +261,7 @@ export default function NewOrganizer() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">
+            <Label htmlFor="state">
               Estado <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -188,7 +276,7 @@ export default function NewOrganizer() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">
+            <Label htmlFor="postalCode">
               Cep <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -204,22 +292,22 @@ export default function NewOrganizer() {
           </div>
         </div>
         <div className="space-y-2 w-2/3">
-          <Label htmlFor="email">
+          <Label htmlFor="contactEmail">
             Email de Contato <span className="text-red-500">*</span>
           </Label>
           <Input
-            id="email"
+            id="contactEmail"
             type="email"
             autoCapitalize="words"
             autoCorrect="off"
             disabled={isLoading}
-            name="email"
-            value={organization.email}
+            name="contactEmail"
+            value={organization.contactEmail}
             onChange={handleInputChange}
           />
         </div>
         <div className="space-y-2 w-2/3">
-          <Label htmlFor="email">Facebook</Label>
+          <Label htmlFor="facebook">Facebook</Label>
           <Input
             id="facebook"
             type="text"
@@ -232,7 +320,7 @@ export default function NewOrganizer() {
           />
         </div>
         <div className="space-y-2 w-2/3">
-          <Label htmlFor="email">Instagram</Label>
+          <Label htmlFor="instagram">Instagram</Label>
           <Input
             id="instagram"
             type="text"
@@ -245,7 +333,7 @@ export default function NewOrganizer() {
           />
         </div>
         <div className="space-y-2 w-2/3">
-          <Label htmlFor="email" className="flex">
+          <Label htmlFor="twitter" className="flex">
             Twitter
           </Label>
           <Input
@@ -260,7 +348,7 @@ export default function NewOrganizer() {
           />
         </div>
         <div className="space-y-2 w-2/3">
-          <Label htmlFor="email">LinkedIn</Label>
+          <Label htmlFor="linkedin">LinkedIn</Label>
           <Input
             id="linkedin"
             type="text"
@@ -272,7 +360,7 @@ export default function NewOrganizer() {
             onChange={handleInputChange}
           />
         </div>
-        <Button className="w-1/3 md:w-1/4" disabled={isLoading}>
+        <Button className="w-1/2 md:w-1/3" disabled={isLoading}>
           {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
           Criar Organização
         </Button>

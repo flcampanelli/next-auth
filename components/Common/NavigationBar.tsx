@@ -120,6 +120,11 @@ export function NavigationBar() {
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
+                      <Link href="/organizers/new">
+                        <span>Criar Organização</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link href="/events/new">
                         <span>Criar Evento</span>
                       </Link>

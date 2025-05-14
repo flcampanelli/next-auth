@@ -20,13 +20,6 @@ interface IEvent {
   title: string;
   logo?: string;
   date: Date | undefined;
-  placeName?: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-  };
   description?: string;
   banner?: string;
   price: number | null;
@@ -47,13 +40,6 @@ export default function NewEvent() {
     title: "",
     logo: "",
     date: undefined,
-    placeName: "",
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      postalCode: "",
-    },
     description: "",
     banner: "",
     price: null,
@@ -115,20 +101,10 @@ export default function NewEvent() {
   ) {
     const { name, value } = e.target;
 
-    if (name in data.address) {
-      setData((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
-    } else {
-      setData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   }
 
   function handleDateChange(e: { name: string; value: any }) {
@@ -222,7 +198,7 @@ export default function NewEvent() {
         className="space-y-8 w-full md:w-3/4 lg:w-3/5 xl:w-1/2"
       >
         <div className="space-y-2">
-          <Label htmlFor="email">
+          <Label htmlFor="title">
             Título do Evento <span className="text-red-500">*</span>
           </Label>
           <Input
@@ -236,42 +212,6 @@ export default function NewEvent() {
             onChange={handleInputChange}
           />
         </div>
-        <div className="flex items-center">
-          <div className="relative">
-            {logoPreview && (
-              <button
-                type="button"
-                className="absolute z-10 right-3 bg-white text-red-500 rounded-full"
-                onClick={() => handleRemoveFile("logo")}
-                disabled={isLoading}
-              >
-                <LucideCircleX />
-              </button>
-            )}
-
-            <Avatar className="h-20 w-20 mr-4">
-              <AvatarImage
-                src={logoPreview || "https://placehold.co/200x200?text=Logo"}
-                alt="event logo"
-                className="select-none object-cover"
-              />
-            </Avatar>
-          </div>
-          <div className="w-96 space-y-2">
-            <Label htmlFor="email">Logo</Label>
-            <Input
-              id="logo"
-              type="file"
-              accept="image/*"
-              autoCapitalize="none"
-              autoCorrect="off"
-              disabled={isLoading}
-              name="logo"
-              onChange={handleFileChange}
-            />
-          </div>
-        </div>
-
         <div className="w-72 space-y-2">
           <Label>
             Data do Evento <span className="text-red-500">*</span>
@@ -286,82 +226,7 @@ export default function NewEvent() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Nome do Local</Label>
-          <Input
-            id="placeName"
-            type="text"
-            autoCapitalize="words"
-            autoCorrect="off"
-            disabled={isLoading}
-            name="placeName"
-            value={data.placeName}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">
-            Endereço <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="street"
-            type="text"
-            autoCapitalize="words"
-            autoCorrect="off"
-            disabled={isLoading}
-            name="street"
-            value={data.address.street}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Cidade <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="city"
-              type="text"
-              autoCapitalize="words"
-              autoCorrect="off"
-              disabled={isLoading}
-              name="city"
-              value={data.address.city}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Estado <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="state"
-              type="text"
-              autoCapitalize="words"
-              autoCorrect="off"
-              disabled={isLoading}
-              name="state"
-              value={data.address.state}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">
-              Cep <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="postalCode"
-              type="text"
-              autoCapitalize="none"
-              autoCorrect="off"
-              disabled={isLoading}
-              name="postalCode"
-              value={data.address.postalCode}
-              onChange={handleInputChange}
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Descrição do Evento</Label>
+          <Label htmlFor="description">Descrição do Evento</Label>
           <Textarea
             id="description"
             name="description"
@@ -375,7 +240,7 @@ export default function NewEvent() {
         </div>
         <div className="space-y-2">
           <div>
-            <Label htmlFor="email">Banner</Label>
+            <Label htmlFor="banner">Banner</Label>
             <Input
               id="banner"
               type="file"
@@ -412,7 +277,7 @@ export default function NewEvent() {
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">
+          <Label htmlFor="price">
             Preço do Ingresso <span className="text-red-500">*</span>
           </Label>
           <Input

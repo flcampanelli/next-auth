@@ -12,7 +12,6 @@ export async function GET() {
         banner: true,
         title: true,
         date: true,
-        placeName: true,
       },
     });
 
@@ -30,15 +29,18 @@ export async function POST(request: NextRequest) {
 
     const session = await getCurrentUser();
 
-    const event = await prisma.event.create({
-      data: {
-        ...validatedData,
-        user: { connect: { id: session.id } },
-      },
-    });
+    // const event = await prisma.event.create({
+    //   data: {
+    //     ...validatedData,
+    //     user: { connect: { id: session.id } },
+    //   },
+    // });
 
     return NextResponse.json(
-      { success: "Evento criado com sucesso", id: event.id },
+      {
+        success: "Evento criado com sucesso",
+        // id: event.id
+      },
       { status: 201 }
     );
   } catch (error) {

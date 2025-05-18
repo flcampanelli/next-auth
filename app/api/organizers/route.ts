@@ -2,6 +2,27 @@ import { db as prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET() {
+  try {
+    const session = await getCurrentUser();
+
+    const organizers = await prisma.organization.findMany({
+      select: {
+        id: true,
+        name: true,
+        logo: true,
+      },
+      where: {
+        userId: session.id,
+      },
+    });
+
+    return NextResponse.json(organizers);
+  } catch (error) {
+    return NextResponse.json({ error: "Erro inesperado" }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   const organizer = await request.json();
 

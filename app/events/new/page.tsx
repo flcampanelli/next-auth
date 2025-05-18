@@ -1,7 +1,6 @@
 "use client";
 
 import { Icons } from "@/components/Common/Icons";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
@@ -13,12 +12,12 @@ import { eventSchema } from "@/lib/validation/event-schema";
 import { LucideCircleX } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 interface IEvent {
   title: string;
-  logo?: string;
+  organizationId: string | undefined;
   date: Date | undefined;
   description?: string;
   banner?: string;
@@ -27,23 +26,41 @@ interface IEvent {
 
 export default function NewEvent() {
   const { toast } = useToast();
-
   const router = useRouter();
 
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [data, setData] = useState<IEvent>({
     title: "",
-    logo: "",
+    organizationId: "",
     date: undefined,
     description: "",
     banner: "",
     price: null,
   });
+
+  useEffect(() => {
+    async function fetchOrganizations() {
+      try {
+        const response = await fetch("/api/organizers");
+        if (!response.ok) {
+          throw new Error("Failed to fetch organizations");
+        }
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        toast({
+          title: "Oops...",
+          description: "Falha ao carregar organizações",
+          variant: "destructive",
+        });
+      }
+    }
+
+    fetchOrganizations();
+  }, [toast]);
 
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -54,10 +71,6 @@ export default function NewEvent() {
 
       let updatedData = { ...validatedData };
 
-      if (logoFile) {
-        const logoUrl = await uploadImage(logoFile, "logo");
-        if (logoUrl) updatedData = { ...updatedData, logo: logoUrl };
-      }
       if (bannerFile) {
         const bannerUrl = await uploadImage(bannerFile, "banner");
         if (bannerUrl) updatedData = { ...updatedData, banner: bannerUrl };
@@ -167,28 +180,17 @@ export default function NewEvent() {
       const file = files[0];
       const previewUrl = URL.createObjectURL(file);
 
-      if (name === "logo") {
-        setLogoFile(file);
-        setLogoPreview(previewUrl);
-      } else {
-        setBannerFile(file);
-        setBannerPreview(previewUrl);
-      }
+      setBannerFile(file);
+      setBannerPreview(previewUrl);
     }
   }
 
   function handleRemoveFile(name: string) {
     const input = document.getElementById(name) as HTMLInputElement | null;
 
-    if (name === "logo") {
-      setLogoFile(null);
-      setLogoPreview(null);
-      if (input) input.value = "";
-    } else {
-      setBannerFile(null);
-      setBannerPreview(null);
-      if (input) input.value = "";
-    }
+    setBannerFile(null);
+    setBannerPreview(null);
+    if (input) input.value = "";
   }
 
   return (

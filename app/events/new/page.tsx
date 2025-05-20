@@ -2,6 +2,7 @@
 
 import { Icons } from "@/components/Common/Icons";
 import { Button } from "@/components/ui/button";
+import { Combobox, ComboboxOption } from "@/components/ui/combobox";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,10 @@ export default function NewEvent() {
   const { toast } = useToast();
   const router = useRouter();
 
+  const [organizations, setOrganizations] = useState<ComboboxOption[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = useState<
+    ComboboxOption | undefined
+  >(undefined);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,7 +54,15 @@ export default function NewEvent() {
           throw new Error("Failed to fetch organizations");
         }
         const data = await response.json();
-        console.log(data);
+        const organizers = data.map(
+          (org: { id: string; name: string; logo: string }) => ({
+            id: org.id,
+            value: org.name.toLocaleLowerCase(),
+            label: org.name,
+            imageUrl: org.logo,
+          })
+        );
+        setOrganizations(organizers);
       } catch (error) {
         toast({
           title: "Oops...",
@@ -61,6 +74,13 @@ export default function NewEvent() {
 
     fetchOrganizations();
   }, [toast]);
+
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      organizationId: selectedOrganization?.id || undefined,
+    }));
+  }, [selectedOrganization]);
 
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -212,6 +232,19 @@ export default function NewEvent() {
             name="title"
             value={data.title}
             onChange={handleInputChange}
+          />
+        </div>
+        <div className="space-y-3 flex flex-col">
+          <Label>
+            Organização <span className="text-red-500">*</span>
+          </Label>
+          <Combobox
+            options={organizations}
+            onSelect={setSelectedOrganization}
+            placeholder="Selecione uma organização"
+            emptyMessage="Nenhuma organização encontrada."
+            searchPlaceholder="Selecione uma organização"
+            className="w-[300px]"
           />
         </div>
         <div className="w-72 space-y-2">

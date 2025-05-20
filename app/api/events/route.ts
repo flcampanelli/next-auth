@@ -29,17 +29,22 @@ export async function POST(request: NextRequest) {
 
     const session = await getCurrentUser();
 
-    // const event = await prisma.event.create({
-    //   data: {
-    //     ...validatedData,
-    //     user: { connect: { id: session.id } },
-    //   },
-    // });
+    const event = await prisma.event.create({
+      data: {
+        title: validatedData.title,
+        date: validatedData.date,
+        price: validatedData.price,
+        description: validatedData.description,
+        banner: validatedData.banner,
+        user: { connect: { id: session.id } },
+        organization: { connect: { id: validatedData.organizationId } },
+      },
+    });
 
     return NextResponse.json(
       {
         success: "Evento criado com sucesso",
-        // id: event.id
+        id: event.id,
       },
       { status: 201 }
     );

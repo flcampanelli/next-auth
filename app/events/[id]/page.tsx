@@ -11,14 +11,16 @@ import Confetti from "react-confetti";
 interface IEvent {
   id: string;
   title: string;
-  logo: string;
   date: string;
-  placeName: string;
-  address: {
-    city: string;
-    state: string;
-    street: string;
-    postalCode: string;
+  organization: {
+    name: string;
+    logo: string;
+    address: {
+      city: string;
+      state: string;
+      street: string;
+      postalCode: string;
+    };
   };
   description: string;
   banner: string;
@@ -65,7 +67,7 @@ export default function EventDetail({ params }: { params: { id: string } }) {
 
   const formattedDate = formatDate(event.date);
   const formattedHour = formatHour(event.date);
-  const formattedAddress = `${event.address.street}, ${event.address.postalCode}, ${event.address.city}, ${event.address.state} `;
+  const formattedAddress = `${event.organization.address.street}, ${event.organization.address.postalCode}, ${event.organization.address.city}, ${event.organization.address.state} `;
 
   function handleLoadingComplete() {
     setIsLoadingImage(false);
@@ -118,8 +120,8 @@ export default function EventDetail({ params }: { params: { id: string } }) {
         <div className="col-span-1 order-1 lg:order-2">
           <EventDetailsCard
             title={event.title}
-            logo={event.logo}
-            place={event.placeName}
+            logo={event.organization.logo}
+            place={event.organization.name}
             date={formattedDate}
             hour={formattedHour}
             address={formattedAddress}

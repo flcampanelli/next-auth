@@ -12,6 +12,7 @@ interface IEvent {
   id: string;
   title: string;
   date: string;
+  organizationId: string;
   organization: {
     name: string;
     logo: string;
@@ -49,9 +50,7 @@ export default function EventDetail({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function getEventById(eventId: string) {
       try {
-        const response = await fetch(`/api/events/${eventId}`, {
-          method: "GET",
-        });
+        const response = await fetch(`/api/events/${eventId}`);
 
         const event = await response.json();
         setEvent(event);
@@ -125,6 +124,7 @@ export default function EventDetail({ params }: { params: { id: string } }) {
             date={formattedDate}
             hour={formattedHour}
             address={formattedAddress}
+            organizationId={event.organizationId}
           />
         </div>
       </div>

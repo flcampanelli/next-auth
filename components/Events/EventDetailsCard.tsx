@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import clsx from "clsx";
 import { CalendarIcon, Clock, MapPinIcon } from "lucide-react";
+import Link from "next/link";
 
 interface EventDetailsCardProps {
   title: string;
@@ -11,6 +12,7 @@ interface EventDetailsCardProps {
   date: string;
   hour: string;
   address: string;
+  organizationId: string;
 }
 
 export function EventDetailsCard({
@@ -20,6 +22,7 @@ export function EventDetailsCard({
   hour,
   place,
   address,
+  organizationId,
 }: EventDetailsCardProps) {
   return (
     <Card className="sticky top-16 flex flex-col justify-around min-h-96">
@@ -27,7 +30,7 @@ export function EventDetailsCard({
         <h2 className="text-xl font-semibold text-center">{title}</h2>
       </CardHeader>
       <CardContent className="text-center">
-        <Button variant="ghost" className="relative h-20 w-20 rounded-full">
+        <Link href={`/organizers/${organizationId}`} className="relative h-20 w-20 rounded-full inline-block">
           <Avatar className="h-20 w-20">
             <AvatarImage
               src={logo}
@@ -35,7 +38,7 @@ export function EventDetailsCard({
               className="select-none object-cover"
             />
           </Avatar>
-        </Button>
+        </Link>
         <div className="mt-6 flex items-center text-sm">
           <CalendarIcon className="mr-1 h-4 w-4" />
           {date}

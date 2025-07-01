@@ -7,7 +7,9 @@ interface IEvent {
   banner: string;
   title: string;
   date: string;
-  placeName: string;
+  organization: {
+    name: string;
+  };
 }
 
 async function getAllEvents(): Promise<IEvent[]> {
@@ -30,14 +32,14 @@ export default async function Home() {
         lg:max-w-[64rem] xl:max-w-[80rem]"
     >
       {events.length ? (
-        events.map(({ id, banner, title, date, placeName }) => (
+        events.map(({ id, banner, title, date, organization }) => (
           <EventCard
             key={id}
             id={id}
             banner={banner}
             title={title}
             date={formatDate(date)}
-            place={placeName}
+            place={organization.name}
           />
         ))
       ) : (

@@ -12,6 +12,14 @@ export async function GET() {
         banner: true,
         title: true,
         date: true,
+        organization: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'asc',
       },
     });
 

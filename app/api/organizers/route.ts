@@ -11,9 +11,19 @@ export async function GET() {
         id: true,
         name: true,
         logo: true,
+        contactEmail: true,
+        address: true,
+        _count: {
+          select: {
+            events: true,
+          },
+        },
       },
       where: {
         userId: session.id,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 

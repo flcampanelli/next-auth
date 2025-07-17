@@ -1,6 +1,8 @@
 "use client";
 
+import { EventCard } from "@/components/Events/EventCard";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { formatDate } from "@/lib/utils";
 import { FacebookIcon, Instagram, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -23,23 +25,43 @@ interface IOrganizer {
   };
 }
 
+interface IEvent {
+  id: number;
+  banner: string;
+  title: string;
+  date: string;
+  organization: {
+    name: string;
+  };
+}
+
 export default function OrganizerPage({ params }: { params: { id: string } }) {
   const [organizer, setOrganizer] = useState<IOrganizer | null>(null);
+  const [events, setEvents] = useState<IEvent[]>([]);
 
   useEffect(() => {
     async function getOrganizerById(organizerId: string) {
       try {
         const response = await fetch(`/api/organizers/${organizerId}`);
-
         const organizer = await response.json();
         setOrganizer(organizer);
-        console.log(organizer);
       } catch (error) {
         console.error("Erro ao buscar o organizador:", error);
       }
     }
 
+    async function getEventsByOrganizerId(organizerId: string) {
+      try {
+        const response = await fetch(`/api/organizers/${organizerId}/events`);
+        const events = await response.json();
+        setEvents(events);
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+      }
+    }
+
     getOrganizerById(params.id);
+    getEventsByOrganizerId(params.id);
   }, [params.id]);
 
   return (
@@ -102,6 +124,30 @@ export default function OrganizerPage({ params }: { params: { id: string } }) {
           )}
         </div>
       </div>
+      {events.length > 0 ? (
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Eventos</h2>
+          <div
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 m-10 mx-auto"
+          >
+            {events.map(({ id, banner, title, date, organization }) => (
+              <EventCard
+                key={id}
+                id={id}
+                banner={banner}
+                title={title}
+                date={formatDate(date)}
+                place={organization.name}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">Eventos</h2>
+          <p className="text-gray-500">Nenhum evento encontrado.</p>
+        </div>
+      )}
     </div>
   );
 }

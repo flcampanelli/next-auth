@@ -3,7 +3,7 @@ import { getBaseUrl } from "@/lib/get-base-url";
 import { formatDate } from "@/lib/utils";
 
 interface IEvent {
-  id: number;
+  id: string;
   banner: string;
   title: string;
   date: string;

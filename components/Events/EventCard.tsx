@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface EventCardProps {
-  id: number;
+  id: string;
   banner: string;
   title: string;
   date: string;

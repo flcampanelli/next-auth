@@ -1,4 +1,5 @@
 "use client";
+import { AlertMessage } from "@/components/Auth/AlertMessage";
 import { GitHubLoginButton } from "@/components/Auth/GithubLoginButton";
 import { GoogleLoginButton } from "@/components/Auth/GoogleLoginButton";
 import { Icons } from "@/components/Common/Icons";
@@ -13,7 +14,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface UserRegisterFormProps
-  extends React.HtmlHTMLAttributes<HTMLDivElement> {}
+  extends React.HtmlHTMLAttributes<HTMLDivElement> { }
 
 interface IUser {
   name: string;
@@ -36,6 +37,7 @@ export function UserRegisterForm({
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>("");
 
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -49,19 +51,20 @@ export function UserRegisterForm({
       body: JSON.stringify(data),
     });
 
-    const response = await request.json();
+    const { success, error } = await request.json();
 
     if (!request.ok) {
       toast({
         title: "Oops...",
-        description: response.error,
+        description: error,
         variant: "destructive",
         action: (
           <ToastAction altText="Tente Novamente">Tente Novamente</ToastAction>
         ),
       });
     } else {
-      router.push("/login");
+      setSuccess(success || "");
+      setTimeout(() => router.push("/login"), 2500);
     }
 
     setData({
@@ -132,6 +135,7 @@ export function UserRegisterForm({
               onChange={handleChange}
             />
           </div>
+          {success && <AlertMessage title="Sucesso" message={success} type="success" />}
           <Button disabled={isLoading}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

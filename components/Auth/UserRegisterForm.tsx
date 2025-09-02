@@ -38,6 +38,7 @@ export function UserRegisterForm({
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   async function onSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -54,17 +55,10 @@ export function UserRegisterForm({
     const { success, error } = await request.json();
 
     if (!request.ok) {
-      toast({
-        title: "Oops...",
-        description: error,
-        variant: "destructive",
-        action: (
-          <ToastAction altText="Tente Novamente">Tente Novamente</ToastAction>
-        ),
-      });
+      setError(error || "Erro ao criar usuário");
     } else {
-      setSuccess(success || "");
-      setTimeout(() => router.push("/login"), 2500);
+      setSuccess(success || "Usuário criado com sucesso");
+      // setTimeout(() => router.push("/login"), 2500);
     }
 
     setData({
@@ -135,6 +129,7 @@ export function UserRegisterForm({
               onChange={handleChange}
             />
           </div>
+          {error && <AlertMessage title="Erro" message={error} type="error" />}
           {success && <AlertMessage title="Sucesso" message={success} type="success" />}
           <Button disabled={isLoading}>
             {isLoading && (

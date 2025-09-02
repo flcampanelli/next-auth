@@ -62,11 +62,11 @@ export const sendAccountVerificationEmail = async (email: string, token: string)
     });
 
     if (error) {
-      return { error };
+      return { error: "Falha ao enviar email de verificação" };
     }
 
     return { success: "Verificação de E-mail enviada" };
   } catch (error) {
-    return { error };
+    return { error: "Erro interno ao enviar email" };
   }
 };

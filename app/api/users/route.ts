@@ -1,4 +1,5 @@
 import { db as prisma } from "@/lib/db";
+import { createVerificationToken, sendAccountVerificationEmail } from "@/services/auth/email-verification";
 
 import bcrypt from "bcryptjs";
 
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name,
       email,
@@ -35,5 +36,12 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  return NextResponse.json(user);
+  const verificationToken = await createVerificationToken(email);
+  const { error, success } = await sendAccountVerificationEmail(email, verificationToken.token);
+  
+  if (error) {
+    return NextResponse.json({ error: error }, { status: 400 });
+  }
+
+  return NextResponse.json({ success: success }, { status: 200 });
 }
